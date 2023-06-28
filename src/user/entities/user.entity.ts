@@ -5,4 +5,6 @@ export class User {
   name?: string;
   createdAt: Date;
   updatedAt: Date;
+  categories: String[];
+  expenses: String[];
 }
