@@ -21,7 +21,7 @@ export class CategoryController {
     return this.categoryService.findAll();
   }
 
-  @Get(':id')
+  @Get('id/:id')
   findById(@Param('id') id: string) {
     return this.categoryService.findById(id);
   }
@@ -37,12 +37,12 @@ export class CategoryController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoryService.update(id, updateCategoryDto);
+  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto, @CurrentUser() user: User) {
+    return this.categoryService.update(id, updateCategoryDto, user.id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(id);
+  remove(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.categoryService.remove(id, user.id);
   }
 }

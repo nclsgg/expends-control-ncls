@@ -38,7 +38,17 @@ export class CategoryService {
     return await this.prisma.category.findMany({ where: { userId } });
   }
 
-  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+  async update(id: string, updateCategoryDto: UpdateCategoryDto, userId: string) {
+    const category = await this.prisma.category.findUnique({ where: { id } });
+
+    if (!category) {
+      throw new Error('Category not found');
+    }
+
+    if (category.userId !== userId) {
+      throw new Error('You are not allowed to update this category');
+    }
+  
     return await this.prisma.category.update({
       where: { id },
       data: {
@@ -47,11 +57,25 @@ export class CategoryService {
     });
   }
 
-  async remove(id: string) {
-    const expensesDeleted = await this.prisma.expense.deleteMany({ where: { categoryId: id } });
+  async remove(id: string, userId: string) {
+    const category = await this.prisma.category.findUnique({ where: { id } });
+
+    if (!category) {
+      throw new Error('Category not found');
+    }
+
+    if (category.userId !== userId) {
+      throw new Error('You are not allowed to delete this category');
+    }
+
+    const expensesRemoved = await this.prisma.expense.deleteMany({ where: { categoryId: id } });
     
     await this.prisma.category.delete({ where: { id } });
 
-    return `Deleted ${expensesDeleted.count} expenses and category with id ${id}`
+    return {
+      ...category,
+      message: `Categoria removida e ${expensesRemoved.count} gastos removidos`,
+    };
+
   }
 }
