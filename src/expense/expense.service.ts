@@ -27,36 +27,60 @@ export class ExpenseService {
       },
     });
 
-    await this.prisma.category.update({
-      where: { id: category.id },
-      data: {
-        expenses: {
-          connect: {
-            id: data.id,
-          },
-        },
-      },
-    })
-
     return {
       ...data,
     }
 
   }
 
-  findAll() {
-    return `This action returns all expense`;
+  async findAll() {
+    return await this.prisma.expense.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} expense`;
+  async findById(id: string) {
+    return await this.prisma.expense.findUnique({ where: { id } });
   }
 
-  update(id: number, updateExpenseDto: UpdateExpenseDto) {
-    return `This action updates a #${id} expense`;
+  async findByUserId(userId: string) {
+    return await this.prisma.expense.findMany({ where: { userId } });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} expense`;
+  async findByCurrentUser(userId: string) {
+    return await this.prisma.expense.findMany({ where: { userId } });
+  }
+
+  async update(id: string, updateExpenseDto: UpdateExpenseDto, userId: string) {
+    const expense = await this.prisma.expense.findUnique({ where: { id } });
+
+    if (!expense) {
+      throw new Error('Expense not found');
+    }
+
+    if (expense.userId !== userId) {
+      throw new Error('You are not allowed to update this expense');
+    }
+    
+    return await this.prisma.expense.update({
+      where: { id },
+      data: {
+        ...updateExpenseDto,
+      },
+    });
+  }
+
+  async remove(id: string, userId: string) {
+    const expense = await this.prisma.expense.findUnique({ where: { id } });
+
+    if (!expense) {
+      throw new Error('Expense not found');
+    }
+
+    if (expense.userId !== userId) {
+      throw new Error('You are not allowed to delete this expense');
+    }
+
+    await this.prisma.expense.delete({ where: { id } });
+
+    return `Deleted expense with id ${id}`
   }
 }

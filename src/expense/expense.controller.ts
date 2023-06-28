@@ -23,16 +23,26 @@ export class ExpenseController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.expenseService.findOne(+id);
+    return this.expenseService.findById(id);
+  }
+
+  @Get('user/:userId')
+  findByUserId(@Param('userId') userId: string) {
+    return this.expenseService.findByUserId(userId);
+  }
+
+  @Get('user')
+  findByCurrentUser(@CurrentUser() user: User) {
+    return this.expenseService.findByCurrentUser(user.id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateExpenseDto: UpdateExpenseDto) {
-    return this.expenseService.update(+id, updateExpenseDto);
+  update(@Param('id') id: string, @Body() updateExpenseDto: UpdateExpenseDto, @CurrentUser() user: User) {
+    return this.expenseService.update(id, updateExpenseDto, user.id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.expenseService.remove(+id);
+  remove(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.expenseService.remove(id, user.id);
   }
 }
