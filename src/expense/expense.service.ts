@@ -29,25 +29,55 @@ export class ExpenseService {
     });
 
     return {
-      ...data,
       message: 'Expense created successfully',
+      data: {
+        ...data,
+      }
     };
   }
 
   async findAll() {
-    return await this.prisma.expense.findMany();
+    const data = await this.prisma.expense.findMany();
+
+    return {
+      message: 'Expenses retrieved successfully',
+      data: [
+        ...data,
+      ]
+    }
   }
 
   async findById(id: string) {
-    return await this.prisma.expense.findUnique({ where: { id } });
+    const data = await this.prisma.expense.findUnique({ where: { id } });
+
+    return {
+      message: 'Expense retrieved successfully',
+      data: {
+        ...data,
+      }
+    }
   }
 
   async findByUserId(userId: string) {
-    return await this.prisma.expense.findMany({ where: { userId } });
+    const data = await this.prisma.expense.findMany({ where: { userId } });
+
+    return {
+      message: 'Expenses retrieved successfully',
+      data: [
+        ...data,
+      ]
+    }
   }
 
   async findByCurrentUser(userId: string) {
-    return await this.prisma.expense.findMany({ where: { userId } });
+    const data = await this.prisma.expense.findMany({ where: { userId } });
+
+    return {
+      message: 'Expenses retrieved successfully',
+      data: [
+        ...data,
+      ]
+    }
   }
 
   async update(id: string, updateExpenseDto: UpdateExpenseDto, userId: string) {
@@ -63,12 +93,19 @@ export class ExpenseService {
       throw new UnauthorizedError('You are not allowed to update this expense');
     }
     
-    return await this.prisma.expense.update({
+    const data = await this.prisma.expense.update({
       where: { id },
       data: {
         ...updateExpenseDto,
       },
     });
+
+    return {
+      message: 'Expense updated successfully',
+      data: {
+        ...data,
+      }
+    }
   }
 
   async remove(id: string, userId: string) {
@@ -84,6 +121,13 @@ export class ExpenseService {
       throw new UnauthorizedError('You are not allowed to delete this expense');
     }
 
-    return await this.prisma.expense.delete({ where: { id } });
+    const data = await this.prisma.expense.delete({ where: { id } });
+
+    return {
+      message: 'Expense deleted successfully',
+      data: {
+        ...data,
+      }
+    };
   }
 }
