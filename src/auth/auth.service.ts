@@ -28,11 +28,11 @@ export class AuthService {
     }
   }
 
-  async validateUser(email: string, password: string) {
-    const user = await this.userService.findOne(email);
+  async validateUser(id: string, password: string) {
+    const user = await this.userService.findOne(id);
 
     if (user) {
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+      const isPasswordValid = await bcrypt.compare(password, user.data.password);
 
       if (isPasswordValid) {
         return {
