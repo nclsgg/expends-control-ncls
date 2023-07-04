@@ -22,30 +22,43 @@ export class UserService {
     const createdUser = await this.prisma.user.create({ data });
 
     return {
-      ...createdUser,
-      password: undefined,
+      message: 'User created successfully',
+      data: {
+        ...createdUser,
+        password: undefined,
+      }
     };
   }
 
   async findAll() {
     const users = await this.prisma.user.findMany();
 
-    return users.map(user => ({
+    const data = users.map((user) => ({
       ...user,
     }));
-  }
-
-  async findOne(email: string) {
-    const data = await this.prisma.user.findUnique({ where: { email } });
 
     return {
-      ...data,
+      message: 'Users retrieved successfully',
+      data: [
+        ...data,
+      ]
+    }
+  }
+
+  async findOne(id: string) {
+    const data = await this.prisma.user.findUnique({ where: { id } });
+
+    return {
+      message: 'User retrieved successfully',
+      data: {
+        ...data,
+      }
     };
   }
 
-  async update(email: string, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     const data = await this.prisma.user.update({
-      where: { email },
+      where: { id },
       data: {
         ...updateUserDto,
         password: updateUserDto.password ? bcrypt.hashSync(updateUserDto.password, 10) : undefined,
@@ -53,17 +66,21 @@ export class UserService {
     });
 
     return {
-      ...data,
-      password: undefined,
+      message: 'User updated successfully',
+      data: {
+        ...data,
+      }
     };
   }
 
-  async remove(email: string) {
-    const data = await this.prisma.user.delete({ where: { email } })
+  async remove(id: string) {
+    const data = await this.prisma.user.delete({ where: { id } })
 
     return {
-      ...data,
-      password: undefined,
+      message: 'User deleted successfully',
+      data: {
+        ...data,
+      }
     };
   }
 }

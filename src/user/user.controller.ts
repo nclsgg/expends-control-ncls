@@ -3,12 +3,14 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { IsPublic } from 'src/auth/decorators/is-public.decorator';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @IsPublic()
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
@@ -19,18 +21,18 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':email')
-  findOne(@Param('email') email: string) {
-    return this.userService.findOne(email);
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.userService.findOne(id);
   }
 
-  @Patch(':email')
-  update(@Param('email') email: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(email, updateUserDto);
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(id, updateUserDto);
   }
 
-  @Delete(':email')
-  remove(@Param('email') email: string) {
-    return this.userService.remove(email);
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.userService.remove(id);
   }
 }
