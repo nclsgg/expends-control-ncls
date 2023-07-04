@@ -15,11 +15,13 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Authentication Boilerplate - NCLS')
+    .setTitle('Expenses Control API')
     .setDescription('')
     .setVersion('1.0')
     .addTag('user')
     .addTag('auth')
+    .addTag('category')
+    .addTag('expense')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
