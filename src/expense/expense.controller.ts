@@ -4,7 +4,9 @@ import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/user/entities/user.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('expense')
 @Controller('expense')
 export class ExpenseController {
   constructor(private readonly expenseService: ExpenseService) {}
@@ -26,14 +28,14 @@ export class ExpenseController {
     return this.expenseService.findById(id);
   }
 
-  @Get('user/:userId')
-  findByUserId(@Param('userId') userId: string) {
-    return this.expenseService.findByUserId(userId);
-  }
-
   @Get('user')
   findByCurrentUser(@CurrentUser() user: User) {
     return this.expenseService.findByCurrentUser(user.id);
+  }
+
+  @Get('user/:userId')
+  findByUserId(@Param('userId') userId: string) {
+    return this.expenseService.findByUserId(userId);
   }
 
   @Patch(':id')

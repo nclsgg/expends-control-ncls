@@ -45,8 +45,8 @@ export class UserService {
     }
   }
 
-  async findOne(id: string) {
-    const data = await this.prisma.user.findUnique({ where: { id } });
+  async findOne(email: string) {
+    const data = await this.prisma.user.findUnique({ where: { email } });
 
     return {
       message: 'User retrieved successfully',
